@@ -59,20 +59,15 @@ public class CustomerController {
     @ResponseBody ResponseEntity<?> searchCustomers(@RequestHeader Map<String, String> headers, @RequestParam(required=true) String username) {
         return  ResponseEntity.ok("[{\"user\":\"foo\"}]");
     }*/
-     @RequestMapping(value = "/customer/search", method =
-RequestMethod.GET)
+     @RequestMapping(value = "/customer/search", method = RequestMethod.GET)
   @ResponseBody ResponseEntity<?> searchCustomers(@RequestHeader
-Map<String, String> headers, @RequestParam(required=true) String
-username) {
+Map<String, String> headers, @RequestParam(required=true) String username) {
       try {
               if (username == null) {
                       return
 ResponseEntity.badRequest().body("Missing username");
               }
-              final List<Customer> customers =
-cloudant.findByIndex(
-                              "{ \"selector\": { \"username\": \""
-+ username + "\" } }",
+              final List<Customer> customers = cloudant.findByIndex("{ \"selector\": { \"username\": \""+ username + "\" } }",
                               Customer.class);
               //  query index
           return  ResponseEntity.ok(customers);
@@ -95,12 +90,10 @@ ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     
     
       @RequestMapping(value = "/customer", method = RequestMethod.GET)
-  @ResponseBody ResponseEntity<?> getCustomers(@RequestHeader
-Map<String, String> hdrs) {
+  @ResponseBody ResponseEntity<?> getCustomers(@RequestHeader Map<String, String> hdrs) {
       try {
           List<Customer> allCusts =
-cloudant.getAllDocsRequestBuilder().includeDocs(true).build().getR
-esponse().getDocsAs(Customer.class);
+cloudant.getAllDocsRequestBuilder().includeDocs(true).build().getResponse().getDocsAs(Customer.class);
           return ResponseEntity.ok(allCusts);
       } catch (Exception e) {
           logger.error(e.getMessage(), e);
@@ -116,17 +109,14 @@ ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     ResponseEntity<?> getById(@RequestHeader Map<String, String> headers, @PathVariable String id) {
         return ResponseEntity.ok("{\"user\":\"foo\"}");
     }*/
-     @RequestMapping(value = "/customer/{id}", method =
-RequestMethod.GET)
-  ResponseEntity<?> getById(@RequestHeader Map<String, String>
-headers, @PathVariable String id) {
+     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
+  ResponseEntity<?> getById(@RequestHeader Map<String, String> headers, @PathVariable String id) {
       try {
           final Customer cust = cloudant.find(Customer.class, id);
           return ResponseEntity.ok(cust);
       } catch (NoDocumentException e) {
           return
-ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with ID
-" + id + " not found");
+ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with ID" + id + " not found");
       }
   }
 
@@ -149,29 +139,23 @@ cloudant.contains(payload.getCustomerId())) {
 payload.getCustomerId() + " already exists");
           }
           final List<Customer> customers = cloudant.findByIndex(
-                              "{ \"selector\": { \"username\": \""
-+ payload.getUsername() + "\" } }",
-                              Customer.class);
+                              "{ \"selector\": { \"username\": \""+ payload.getUsername() + "\" } }" Customer.class);
           if (!customers.isEmpty()) {
-              return ResponseEntity.badRequest().body("Customer
-with name " + payload.getUsername() + " already exists");
+              return ResponseEntity.badRequest().body("Customer with name " + payload.getUsername() + " already exists");
           }
           final Response resp = cloudant.save(payload);
           if (resp.getError() == null) {
               final URI location =
-ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").bui
-ldAndExpand(resp.getId()).toUri();
+ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(resp.getId()).toUri();
               return ResponseEntity.created(location).build();
           } else {
               return
-ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp.
-getError());
+ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resp.getError());
           }
       } catch (Exception ex) {
           logger.error("Error creating customer: " + ex);
           return
-ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro
-r creating customer: " + ex.toString());
+ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating customer: " + ex.toString());
 }
 }
 
