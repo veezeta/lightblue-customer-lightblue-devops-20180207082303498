@@ -138,8 +138,7 @@ cloudant.contains(payload.getCustomerId())) {
               return ResponseEntity.badRequest().body("Id " +
 payload.getCustomerId() + " already exists");
           }
-          final List<Customer> customers = cloudant.findByIndex(
-                              "{ \"selector\": { \"username\": \""+ payload.getUsername() + "\" } }" Customer.class);
+          final List<Customer> customers = cloudant.findByIndex("{ \"selector\": { \"username\": \""+ payload.getUsername() + "\" } }" Customer.class);
           if (!customers.isEmpty()) {
               return ResponseEntity.badRequest().body("Customer with name " + payload.getUsername() + " already exists");
           }
