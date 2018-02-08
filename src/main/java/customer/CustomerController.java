@@ -60,8 +60,9 @@ public class CustomerController {
             throw e;
         }
     }
-    
-    private Database cloudant {return cloudant;}
+ //private Database cloudant  {
+   //     return cloudant;
+//}
 
     /**
      * @return customer by username
